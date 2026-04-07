@@ -23,7 +23,9 @@ from regtracker.storage import (
     list_snapshots,
     get_snapshot_meta,
     delete_snapshot,
+    load_snapshot_entries,
 )
+from regtracker.diff import compare_snapshots
 from regtracker.config import VALUE_TYPE_NAMES
 
 # ---------------------------------------------------------------------------
@@ -229,6 +231,97 @@ def snapshot_delete_cmd(
         console.print(f"\n[green]✅ Snapshot '{snapshot_id}' deleted.[/]\n")
     else:
         console.print(f"\n[red]❌ Failed to delete snapshot '{snapshot_id}'.[/]\n")
+
+# ---------------------------------------------------------------------------
+# Diff logic
+# ---------------------------------------------------------------------------
+
+@app.command("diff")
+def diff_cmd(
+    snapshot_a: str = typer.Argument(..., help="The FIRST (baseline) snapshot ID."),
+    snapshot_b: str = typer.Argument(..., help="The SECOND (new) snapshot ID."),
+    no_filter: bool = typer.Option(
+        False, "--no-filter",
+        help="Disable noise filtering (show all changes including MRU caches/window positions).",
+    ),
+):
+    """Compare two snapshots and show what changed."""
+    # 1. Fetch metadata first to ensure both exist and to show context
+    meta_a = get_snapshot_meta(snapshot_a)
+    meta_b = get_snapshot_meta(snapshot_b)
+    
+    if not meta_a:
+        console.print(f"\n[bold red]❌ Baseline snapshot '{snapshot_a}' not found.[/]\n")
+        raise typer.Exit(1)
+    if not meta_b:
+        console.print(f"\n[bold red]❌ Target snapshot '{snapshot_b}' not found.[/]\n")
+        raise typer.Exit(1)
+
+    # Sanity check: warn if diffing completely different hives
+    if meta_a.hive != meta_b.hive or meta_a.root_path != meta_b.root_path:
+        console.print("[yellow]⚠️  Warning: Comparing snapshots from different registry paths.[/]")
+        console.print(f"  A: {meta_a.hive}\\{meta_a.root_path}")
+        console.print(f"  B: {meta_b.hive}\\{meta_b.root_path}\n")
+
+    # 2. Load entries
+    with console.status("[cyan]Loading snapshot data...[/]"):
+        entries_a = load_snapshot_entries(snapshot_a)
+        entries_b = load_snapshot_entries(snapshot_b)
+
+    # 3. Compute Diff
+    with console.status("[cyan]Calculating differences...[/]"):
+        result = compare_snapshots(
+            snapshot_a, entries_a, snapshot_b, entries_b, apply_filters=not no_filter
+        )
+
+    # 4. Display Results
+    if result.total_changes == 0:
+        console.print(Panel(
+            "[bold green]No differences found![/]",
+            title="🔍 Diff Results", border_style="green", padding=(1,2)
+        ))
+        raise typer.Exit()
+
+    # Display Deletions First (Red)
+    if result.deleted:
+        console.print("\n[bold red]🔴 DELETED[/]")
+        for (kpath, vname), entry in sorted(result.deleted.items()):
+            display_name = vname if vname else "(Default)"
+            console.print(f"  [dim]{kpath}\\[/]{display_name}")
+
+    # Display Additions (Green)
+    if result.added:
+        console.print("\n[bold green]🟢 ADDED[/]")
+        for (kpath, vname), entry in sorted(result.added.items()):
+            display_name = vname if vname else "(Default)"
+            console.print(f"  [dim]{kpath}\\[/]{display_name} = [green]{entry.value_data}[/]")
+
+    # Display Modifications (Yellow)
+    if result.modified:
+        console.print("\n[bold yellow]🟡 MODIFIED[/]")
+        for (kpath, vname), (old_e, new_e) in sorted(result.modified.items()):
+            display_name = vname if vname else "(Default)"
+            console.print(f"  [dim]{kpath}\\[/]{display_name}")
+            console.print(f"    [dim]Old:[/] {old_e.value_data}")
+            console.print(f"    [yellow]New:[/] {new_e.value_data}")
+
+    # Summary Panel
+    summary = Text()
+    summary.append(f"  🟢 Added:    {len(result.added):,}\n", style="green")
+    summary.append(f"  🔴 Deleted:  {len(result.deleted):,}\n", style="red")
+    summary.append(f"  🟡 Modified: {len(result.modified):,}\n", style="yellow")
+    
+    if not no_filter:
+        summary.append(f"\n  🛡️  Filtered Noise: {result.filtered_count:,} items", style="dim")
+
+    console.print()
+    console.print(Panel(
+        summary,
+        title="[bold blue]📊 Diff Summary[/]",
+        border_style="blue",
+        padding=(0, 2),
+    ))
+    console.print()
 
 
 # ---------------------------------------------------------------------------
