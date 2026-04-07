@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Registry Diff Report</title>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; background: #f8f9fa; margin: 2rem; color: #333; }
+        h1 { color: #2c3e50; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        .summary { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .badge { padding: 4px 8px; border-radius: 4px; font-weight: bold; color: white; display: inline-block; margin-right: 10px; }
+        .badge.added { background: #2ecc71; }
+        .badge.deleted { background: #e74c3c; }
+        .badge.modified { background: #f1c40f; color: #333; }
+        table { width: 100%; border-collapse: collapse; background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #2c3e50; color: white; }
+        tr.added td:first-child { border-left: 4px solid #2ecc71; background: #eafaf1; }
+        tr.deleted td:first-child { border-left: 4px solid #e74c3c; background: #fdedec; }
+        tr.modified td:first-child { border-left: 4px solid #f1c40f; background: #fef9e7; }
+        .path { font-family: monospace; font-size: 0.9em; }
+        .value { font-family: monospace; white-space: pre-wrap; word-break: break-all; }
+    </style>
+</head>
+<body>
+    <h1>Registry Diff Report</h1>
+    <div class="summary">
+        Comparing <span class="path">6ec7ba71fb6b</span> with <span class="path">15179866b876</span><br><br>
+        <div class="badge added">Added: 1</div>
+        <div class="badge deleted">Deleted: 1</div>
+        <div class="badge modified">Modified: 0</div>
+    </div>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Type</th>
+                <th>Path</th>
+                <th>Value Name</th>
+                <th>Old Value</th>
+                <th>New Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="deleted"><td>Removed</td><td class="path">HKCU\Software\RegistryTrackerTest</td><td>OldVal</td><td class="value">DeleteMe</td><td>-</td></tr>\n<tr class="added"><td>Added</td><td class="path">HKCU\Software\RegistryTrackerTest</td><td>NewVal</td><td>-</td><td class="value">HelloWorld</td></tr>
+        </tbody>
+    </table>
+</body>
+</html>

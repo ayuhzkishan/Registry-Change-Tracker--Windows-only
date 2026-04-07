@@ -1,0 +1,1 @@
+# Registry Diff Report\n**Baseline:** `6ec7ba71fb6b` | **Target:** `15179866b876`\n\n🟢 Added: 1 | 🔴 Deleted: 1 | 🟡 Modified: 0\n\n| Change | Path | Name | Old Value | New Value |\n|---|---|---|---|---|\n| 🔴 Deleted | `HKCU\Software\RegistryTrackerTest` | `OldVal` | `DeleteMe` | - |\n| 🟢 Added | `HKCU\Software\RegistryTrackerTest` | `NewVal` | - | `HelloWorld` |\n

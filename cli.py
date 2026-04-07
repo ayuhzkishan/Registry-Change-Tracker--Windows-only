@@ -27,6 +27,8 @@ from regtracker.storage import (
 )
 from regtracker.diff import compare_snapshots
 from regtracker.monitor import RegistryWatcher
+from regtracker.exporter import export_html, export_csv, export_markdown
+from regtracker.rollback import generate_rollback
 from regtracker.config import VALUE_TYPE_NAMES, DEFAULT_WATCH_PATHS
 
 # ---------------------------------------------------------------------------
@@ -245,6 +247,18 @@ def diff_cmd(
         False, "--no-filter",
         help="Disable noise filtering (show all changes including MRU caches/window positions).",
     ),
+    export: str = typer.Option(
+        None, "--export", "-e",
+        help="Export format: 'html', 'csv', or 'md'."
+    ),
+    output: str = typer.Option(
+        None, "--output", "-o",
+        help="Output file path for export or rollback."
+    ),
+    rollback: bool = typer.Option(
+        False, "--rollback", "-r",
+        help="Generate a .reg file capable of reversing these changes."
+    ),
 ):
     """Compare two snapshots and show what changed."""
     # 1. Fetch metadata first to ensure both exist and to show context
@@ -324,6 +338,32 @@ def diff_cmd(
     ))
     console.print()
 
+    # 5. Handle Export / Rollback
+    if export or rollback:
+        if not output:
+             console.print("[red]❌ Error: --output file path is required when using --export or --rollback.[/]")
+             raise typer.Exit(1)
+             
+        try:
+            with open(output, "w", encoding="utf-8") as f:
+                if rollback:
+                    generate_rollback(result, f)
+                    console.print(f"[bold green]✅ Rollback script generated:[/] {output}")
+                elif export == "html":
+                    export_html(result, f)
+                    console.print(f"[bold green]✅ HTML report generated:[/] {output}")
+                elif export == "csv":
+                    export_csv(result, f)
+                    console.print(f"[bold green]✅ CSV generated:[/] {output}")
+                elif export == "md":
+                    export_markdown(result, f)
+                    console.print(f"[bold green]✅ Markdown generated:[/] {output}")
+                else:
+                    console.print(f"[red]❌ Error: Unknown export format '{export}'. Use html, csv, or md.[/]")
+                    raise typer.Exit(1)
+        except OSError as e:
+            console.print(f"[red]❌ Failed to write output file: {e}[/]")
+            raise typer.Exit(1)
 
 # ---------------------------------------------------------------------------
 # Monitor logic

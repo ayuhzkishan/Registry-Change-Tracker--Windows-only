@@ -1,0 +1,3 @@
+Change Type,Key Path,Value Name,Value Type,Old Value,New Value
+DELETED,HKCU\Software\RegistryTrackerTest,OldVal,1,DeleteMe,
+ADDED,HKCU\Software\RegistryTrackerTest,NewVal,1,,HelloWorld
