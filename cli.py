@@ -26,7 +26,8 @@ from regtracker.storage import (
     load_snapshot_entries,
 )
 from regtracker.diff import compare_snapshots
-from regtracker.config import VALUE_TYPE_NAMES
+from regtracker.monitor import RegistryWatcher
+from regtracker.config import VALUE_TYPE_NAMES, DEFAULT_WATCH_PATHS
 
 # ---------------------------------------------------------------------------
 # App setup
@@ -323,6 +324,33 @@ def diff_cmd(
     ))
     console.print()
 
+
+# ---------------------------------------------------------------------------
+# Monitor logic
+# ---------------------------------------------------------------------------
+
+@app.command("monitor")
+def monitor_cmd(
+    paths: str = typer.Option(
+        None, "--paths", "-p",
+        help="Comma-separated list of registry paths to watch. Defaults to common persistence keys."
+    ),
+):
+    """Monitor registry paths in real-time for changes."""
+    if paths:
+        watch_list = [p.strip() for p in paths.split(",")]
+    else:
+        watch_list = DEFAULT_WATCH_PATHS
+        
+    watcher = RegistryWatcher(watch_list)
+    try:
+        watcher.start()
+        # Keep main thread alive
+        while True:
+            time.sleep(1)
+    except KeyboardInterrupt:
+        watcher.stop()
+        console.print("[dim]Exited cleanly.[/]")
 
 # ---------------------------------------------------------------------------
 # Entry point

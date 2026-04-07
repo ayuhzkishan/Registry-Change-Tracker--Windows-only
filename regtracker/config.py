@@ -58,3 +58,13 @@ DEFAULT_DB_PATH = os.path.join(DEFAULT_DB_DIR, "regtracker.db")
 # Snapshot defaults
 # ---------------------------------------------------------------------------
 MAX_VALUE_DATA_LENGTH = 4096  # Truncate binary blobs larger than this (bytes)
+
+# ---------------------------------------------------------------------------
+# Monitoring defaults
+# ---------------------------------------------------------------------------
+DEFAULT_WATCH_PATHS = [
+    "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run",
+    "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\RunOnce",
+    "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
+    "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\RunOnce",
+]
