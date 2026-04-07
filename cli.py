@@ -393,6 +393,20 @@ def monitor_cmd(
         console.print("[dim]Exited cleanly.[/]")
 
 # ---------------------------------------------------------------------------
+# Dashboard logic
+# ---------------------------------------------------------------------------
+
+@app.command("ui")
+def ui_cmd(
+    port: int = typer.Option(8000, "--port", "-p", help="Port to run the dashboard on.")
+):
+    """Launch the Web UI Dashboard."""
+    console.print(f"[bold green]🚀 Starting Web Dashboard on http://127.0.0.1:{port}[/]")
+    import uvicorn
+    uvicorn.run("dashboard.app:app", host="127.0.0.1", port=port, log_level="warning")
+
+
+# ---------------------------------------------------------------------------
 # Entry point
 # ---------------------------------------------------------------------------
 

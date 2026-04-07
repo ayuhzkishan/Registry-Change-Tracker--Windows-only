@@ -47,10 +47,10 @@ python cli.py diff <snapshot_id_1> <snapshot_id_2>
 ## 🗺️ Roadmap
 
 - [x] **Phase 1:** Snapshot engine + SQLite storage
-- [ ] **Phase 2:** Diffing engine with noise filtering
-- [ ] **Phase 3:** Real-time monitoring + process attribution
-- [ ] **Phase 4:** Multi-format export + rollback `.reg` generation
-- [ ] **Phase 5:** Web dashboard + PyInstaller packaging
+- [x] **Phase 2:** Diffing engine with noise filtering
+- [x] **Phase 3:** Real-time monitoring + process attribution
+- [x] **Phase 4:** Multi-format export + rollback `.reg` generation
+- [x] **Phase 5:** Web dashboard + PyInstaller packaging
 
 ## 📄 License
 

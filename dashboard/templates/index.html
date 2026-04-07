@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registry Change Tracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- SVG Icons via Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="logo">
+            <i class="ph-fill ph-database"></i>
+            <h2>RegTracker</h2>
+        </div>
+        <nav>
+            <a href="#" class="active"><i class="ph ph-camera"></i> Snapshots</a>
+            <a href="#"><i class="ph ph-arrows-merge"></i> Compare</a>
+            <a href="#"><i class="ph ph-activity"></i> Monitoring</a>
+            <a href="#"><i class="ph ph-gear"></i> Settings</a>
+        </nav>
+    </div>
+
+    <main class="content">
+        <header>
+            <div class="header-title">
+                <h1>Snapshot Dashboard</h1>
+                <p>Manage and analyze your Windows Registry snapshots</p>
+            </div>
+            <button id="btnNewSnapshot" class="btn btn-primary">
+                <i class="ph ph-plus"></i> New Snapshot
+            </button>
+        </header>
+
+        <!-- Dynamic Content injected here -->
+        <div id="snapshot-grid" class="snapshot-grid">
+            <!-- Populated via API -->
+        </div>
+
+        <section id="diff-section" class="diff-section hidden">
+            <div class="diff-header">
+                <h2>Comparison Results</h2>
+                <div class="diff-stats">
+                    <span class="stat added" id="stat-added">0 Added</span>
+                    <span class="stat deleted" id="stat-deleted">0 Deleted</span>
+                    <span class="stat modified" id="stat-modified">0 Modified</span>
+                </div>
+            </div>
+            
+            <div class="table-container">
+                <table class="table" id="diff-table">
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Registry Path</th>
+                            <th>Details</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Populated via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal for taking snapshots -->
+    <div class="modal" id="modal-snapshot">
+        <div class="modal-content">
+            <h3>Take New Snapshot</h3>
+            <p class="modal-desc">Enter the registry path you want to capture.</p>
+            <div class="input-group">
+                <label>Hive Path</label>
+                <input type="text" id="inp-hive-path" placeholder="e.g. HKCU\Software\Microsoft\Windows" autocomplete="off" />
+            </div>
+            <div class="input-group">
+                <label>Label</label>
+                <input type="text" id="inp-label" placeholder="e.g. before_installation" autocomplete="off" />
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" id="btnCancelSnapshot">Cancel</button>
+                <button class="btn btn-primary" id="btnSubmitSnapshot">Capture</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
