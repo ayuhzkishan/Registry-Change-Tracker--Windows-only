@@ -1,8 +1,8 @@
-# 🔍 Registry Change Tracker (Windows)
+#  Registry Change Tracker (Windows)
 
 A powerful command-line tool for tracking, comparing, and monitoring Windows Registry changes. Built for **malware analysts**, **system administrators**, and **software debuggers**.
 
-## ✨ Features
+##  Features
 
 - **Targeted Snapshots** — Capture specific registry hives (e.g., `HKCU\Software`) instead of scanning the entire registry
 - **Snapshot Storage** — Persist snapshots in a local SQLite database with metadata (timestamp, hostname, OS version)
@@ -12,7 +12,7 @@ A powerful command-line tool for tracking, comparing, and monitoring Windows Reg
 - **Export** — Generate reports in HTML, CSV, or Markdown
 - **Rollback Generation** — Automatically generate `.reg` files to undo detected changes
 
-## 🚀 Quick Start
+##  Quick Start
 
 ### Prerequisites
 
@@ -44,7 +44,7 @@ python cli.py snapshot list
 python cli.py diff <snapshot_id_1> <snapshot_id_2>
 ```
 
-## 🗺️ Roadmap
+##  Roadmap
 
 - [x] **Phase 1:** Snapshot engine + SQLite storage
 - [x] **Phase 2:** Diffing engine with noise filtering
@@ -56,6 +56,6 @@ python cli.py diff <snapshot_id_1> <snapshot_id_2>
 
 MIT License
 
-## 🤝 Contributing
+##  Contributing
 
 Contributions, issues, and feature requests are welcome!
